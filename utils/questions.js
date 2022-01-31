@@ -1,6 +1,24 @@
 const inquirer = require('inquirer');
 const { getDepartments, addDepartment, updateDepartment, deleteDepartment }  = require('../routes/apiRoutes/departmentRoutes');
 
+const askContinue = () => {
+    return inquirer.prompt([
+        {
+            type: 'confirm',
+            name: 'ifContinue',
+            message: 'Would you like to go back to the menu?',
+            default: true
+        }
+    ])
+    .then(response => {
+        if (response.ifContinue) {
+            menuQuestion();
+        } else {
+            console.log('Thank you. Please enter CTRL + C to exit this application.');
+        }
+    });
+}
+
 const menuQuestion = () => {
     return inquirer.prompt([
         {
@@ -17,7 +35,7 @@ const menuQuestion = () => {
                 new inquirer.Separator('DELETE:'),
                     'Delete a Department',
                 new inquirer.Separator()],
-            default: 'View',
+            default: 'View All Departments',
             loop: true
         }
     ])
@@ -25,7 +43,7 @@ const menuQuestion = () => {
         // DEPARTMENT:
         if (choice.menuChoice === 'View All Departments') {
             getDepartments()
-                .then(data => {menuQuestion()});
+                .then(data => {askContinue()});
             return false;
         } else if (choice.menuChoice === 'Create a New Department') {
             return inquirer.prompt([
@@ -91,21 +109,20 @@ const menuQuestion = () => {
         }
     })
     .then(input => {
-        console.log(input);
         if (!input) {
             return;
         } else if (input.newDepartmentName) {
             // Create new Department
             return addDepartment(input.newDepartmentName)
-                .then(data => {menuQuestion()});
+                .then(data => {askContinue()});
         } else if (input.updateDepartmentName) {
             // Update a Department
             return updateDepartment(input.updateDepartmentId, input.updateDepartmentName)
-                .then(data => {menuQuestion()});
+                .then(data => {askContinue()});
         } else if (input.deleteDepartmentId) {
             // Delete a Department
             return deleteDepartment(input.deleteDepartmentId)
-                .then(data => {menuQuestion()});
+                .then(data => {askContinue()});
         }
     });
 };
