@@ -1,5 +1,6 @@
 const inquirer = require('inquirer');
-const { getDepartments, addDepartment, updateDepartment, deleteDepartment }  = require('../routes/apiRoutes/departmentRoutes');
+const { getDepartments, addDepartment, updateDepartment, deleteDepartment }  = require('../lib/departments');
+const { getRoles } = require('../lib/roles');
 
 const askContinue = () => {
     return inquirer.prompt([
@@ -28,6 +29,7 @@ const menuQuestion = () => {
             choices: [
                 new inquirer.Separator('VIEW:'),
                     'View All Departments',
+                    'View All Roles',
                 new inquirer.Separator('ADD NEW:'),
                     'Create a New Department',
                 new inquirer.Separator('UPDATE:'),
@@ -43,6 +45,10 @@ const menuQuestion = () => {
         // DEPARTMENT:
         if (choice.menuChoice === 'View All Departments') {
             getDepartments()
+                .then(data => {askContinue()});
+            return false;
+        } else if (choice.menuChoice === 'View All Roles') {
+            getRoles()
                 .then(data => {askContinue()});
             return false;
         } else if (choice.menuChoice === 'Create a New Department') {
