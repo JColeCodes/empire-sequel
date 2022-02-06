@@ -256,11 +256,11 @@ const menuQuestion = () => {
                     loop: false
                 },
                 {
-                    type: 'number',
+                    type: 'input',
                     name: 'updateEmployeeInput',
                     message: 'What would you like to update the above value to? (To remove a manager, enter 0)',
                     validate: updateEmployeeInputInput => {
-                        if (updateEmployeeInputInput) {
+                        if (!isNaN(updateEmployeeInputInput)) {
                             return true;
                         } else {
                             console.log('Please enter a numerical response:');
